@@ -15,26 +15,26 @@ Requirements:
 
 Exercise Flow:
 1.	Data Creation and Exploration 
-o	Create a simplified data traffic file
-o	Show how to load and inspect the data using pandas
-o	Briefly explain key features in the dataset (e.g., duration, protocol type, bytes transferred)
+-	Create a simplified data traffic file
+-	Show how to load and inspect the data using pandas
+-	Briefly explain key features in the dataset (e.g., duration, protocol type, bytes transferred)
 2.	Data Preprocessing 
-o	Demonstrate basic data preprocessing steps: 
-	Handling categorical variables (e.g., protocol type)
-	Normalizing numerical features
-o	Prepare the data for machine learning
+-	Demonstrate basic data preprocessing steps: 
+-	Handling categorical variables (e.g., protocol type)
+-	Normalizing numerical features
+-	Prepare the data for machine learning
 3.	Model Training 
-o	Use scikit-learn to train a simple classifier (e.g., Random Forest)
-o	Split data into training and testing sets
-o	Train the model and evaluate its performance (accuracy, precision, recall)
+-	Use scikit-learn to train a simple classifier (e.g., Random Forest)
+-	Split data into training and testing sets
+-	Train the model and evaluate its performance (accuracy, precision, recall)
 4.	Model Testing and Visualization 
-o	Test the model on a separate set of network connections
-o	Visualize the results using matplotlib (e.g., confusion matrix heatmap)
-o	Interpret what the results mean for network security
+-	Test the model on a separate set of network connections
+-	Visualize the results using matplotlib (e.g., confusion matrix heatmap)
+-	Interpret what the results mean for network security
 5.	Conclusion and Real-World Applications  
-o	Recap what we've built and how it relates to real-world AI-driven network security systems
-o	Discuss how this simple model could be expanded in enterprise environments
-o	Highlight the importance of continuous learning and adaptation in AI-driven security
+-	Recap what we've built and how it relates to real-world AI-driven network security systems
+-	Discuss how this simple model could be expanded in enterprise environments
+-	Highlight the importance of continuous learning and adaptation in AI-driven security
 
 This exercise directly reflects AI-driven network security by:
 1.	Using network traffic data, similar to what security professionals would analyze.
