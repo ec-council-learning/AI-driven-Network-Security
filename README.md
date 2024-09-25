@@ -41,5 +41,6 @@ This exercise directly reflects AI-driven network security by:
 2.	Applying machine learning to detect potential security threats in network connections.
 3.	Demonstrating how AI can quickly process and classify large amounts of network data.
 4.	Showing how AI can help identify potential intrusions that traditional rule-based systems might miss.
+
 This approach gives students hands-on experience with a fundamental application of AI in network security, reinforcing the course's core concepts while remaining accessible to beginners. It provides a tangible example of how AI transforms network security operations, which is at the heart of the course material.
 
