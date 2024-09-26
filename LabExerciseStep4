@@ -1,0 +1,99 @@
+# Lab Exercise Step 4: Evaluation of Machine Learning model against data
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, precision_score, recall_score, confusion_matrix, roc_curve, auc
+
+# Load the preprocessed data
+print("Loading preprocessed data...")
+X_train = pd.read_csv('X_train.csv')
+X_test = pd.read_csv('X_test.csv')
+y_train = pd.read_csv('y_train.csv')['intrusion']
+y_test = pd.read_csv('y_test.csv')['intrusion']
+
+# Initialize and train the Random Forest Classifier
+print("Training the Random Forest Classifier...")
+rf_classifier = RandomForestClassifier(n_estimators=100, random_state=42)
+rf_classifier.fit(X_train, y_train)
+
+# Make predictions on the test set
+y_pred = rf_classifier.predict(X_test)
+y_pred_proba = rf_classifier.predict_proba(X_test)[:, 1]
+
+# Calculate performance metrics
+accuracy = accuracy_score(y_test, y_pred)
+precision = precision_score(y_test, y_pred)
+recall = recall_score(y_test, y_pred)
+
+print(f"\nModel Performance:")
+print(f"Accuracy: {accuracy:.4f}")
+print(f"Precision: {precision:.4f}")
+print(f"Recall: {recall:.4f}")
+
+# Generate and display confusion matrix
+conf_matrix = confusion_matrix(y_test, y_pred)
+plt.figure(figsize=(10,7))
+sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues')
+plt.title('Confusion Matrix')
+plt.ylabel('Actual')
+plt.xlabel('Predicted')
+plt.show()
+
+# Display feature importances
+feature_importance = pd.DataFrame({
+    'feature': X_train.columns,
+    'importance': rf_classifier.feature_importances_
+}).sort_values('importance', ascending=False)
+
+plt.figure(figsize=(10,7))
+sns.barplot(x='importance', y='feature', data=feature_importance.head(10))
+plt.title('Top 10 Most Important Features')
+plt.show()
+
+print("\nTop 10 Most Important Features:")
+print(feature_importance.head(10))
+
+# Function to get prediction and feature importances for a single instance
+def predict_single_instance(instance):
+    prediction = rf_classifier.predict(instance.reshape(1, -1))[0]
+    probabilities = rf_classifier.predict_proba(instance.reshape(1, -1))[0]
+    return prediction, probabilities
+
+# Test the model on a few specific examples
+print("\nTesting the model on specific examples:")
+for i in range(5):  # Test 5 random instances
+    instance = X_test.iloc[i].values
+    prediction, probabilities = predict_single_instance(instance)
+    print(f"\nInstance {i+1}:")
+    print(f"Predicted class: {'Intrusion' if prediction == 1 else 'Normal'}")
+    print(f"Probability of being an intrusion: {probabilities[1]:.4f}")
+
+# Visualize decision boundary (for 2 most important features)
+top_features = feature_importance['feature'].head(2).tolist()
+X_top2 = X_test[top_features]
+
+plt.figure(figsize=(10, 8))
+scatter = plt.scatter(X_top2.iloc[:, 0], X_top2.iloc[:, 1], c=y_pred_proba, cmap='coolwarm')
+plt.colorbar(scatter)
+plt.xlabel(top_features[0])
+plt.ylabel(top_features[1])
+plt.title('Decision Boundary Visualization')
+plt.show()
+
+# ROC Curve
+fpr, tpr, _ = roc_curve(y_test, y_pred_proba)
+roc_auc = auc(fpr, tpr)
+
+plt.figure(figsize=(10, 8))
+plt.plot(fpr, tpr, color='darkorange', lw=2, label=f'ROC curve (AUC = {roc_auc:.2f})')
+plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('Receiver Operating Characteristic (ROC) Curve')
+plt.legend(loc="lower right")
+plt.show()
+     
