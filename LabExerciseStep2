@@ -1,0 +1,62 @@
+# Lab Exercise Step 2: Preprocess and prepare data for Machine Learning
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.model_selection import train_test_split
+
+# Load the data
+print("Loading the dataset...")
+df = pd.read_csv('simplified_network_data.csv')
+
+# Separate features and target variable
+X = df.drop('intrusion', axis=1)
+y = df['intrusion']
+
+# Identify numerical and categorical columns
+numerical_features = ['duration', 'src_bytes', 'dst_bytes', 'wrong_fragment', 'urgent']
+categorical_features = ['protocol', 'flag', 'land']
+
+# Create preprocessing steps for numerical and categorical data
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', StandardScaler(), numerical_features),
+        ('cat', OneHotEncoder(drop='first', sparse_output=False), categorical_features)
+    ])
+
+# Fit the preprocessor to the data and transform
+X_preprocessed = preprocessor.fit_transform(X)
+
+# Get feature names after preprocessing
+feature_names = (numerical_features +
+                 preprocessor.named_transformers_['cat'].get_feature_names_out(categorical_features).tolist())
+
+# Create a new dataframe with preprocessed data
+X_preprocessed_df = pd.DataFrame(X_preprocessed, columns=feature_names)
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X_preprocessed, y, test_size=0.2, random_state=42)
+
+# Save preprocessed data and target variable
+print("Saving preprocessed data...")
+X_preprocessed_df.to_csv('preprocessed_features.csv', index=False)
+pd.DataFrame(y, columns=['intrusion']).to_csv('target_variable.csv', index=False)
+
+# Save training and testing sets
+pd.DataFrame(X_train, columns=feature_names).to_csv('X_train.csv', index=False)
+pd.DataFrame(X_test, columns=feature_names).to_csv('X_test.csv', index=False)
+pd.DataFrame(y_train, columns=['intrusion']).to_csv('y_train.csv', index=False)
+pd.DataFrame(y_test, columns=['intrusion']).to_csv('y_test.csv', index=False)
+
+print("\nShape of training set:", X_train.shape)
+print("Shape of testing set:", X_test.shape)
+
+# Display the first few rows of the preprocessed data
+print("\nFirst few rows of preprocessed data:")
+print(X_preprocessed_df.head())
+
+# Display summary statistics of preprocessed numerical features
+print("\nSummary statistics of preprocessed numerical features:")
+print(X_preprocessed_df[numerical_features].describe())
+
+print("\nPreprocessed data and splits have been saved as CSV files.")
