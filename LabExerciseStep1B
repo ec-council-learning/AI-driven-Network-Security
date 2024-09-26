@@ -1,0 +1,48 @@
+# Lab Exercise Step 1B: Explore test data set for network traffic
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load the data
+print("Loading the dataset...")
+df = pd.read_csv('simplified_network_data.csv')
+
+# Display basic information about the dataset
+print("\nDataset Overview:")
+print(df.info())
+
+# Show the first few rows of the data
+print("\nFirst few rows of the dataset:")
+print(df.head())
+
+# Describe the numerical features
+print("\nSummary statistics of numerical features:")
+print(df.describe())
+
+# Display the distribution of the 'protocol' feature
+print("\nDistribution of protocols:")
+print(df['protocol'].value_counts(normalize=True))
+
+# Visualize the distribution of normal vs. intrusion connections
+plt.figure(figsize=(8, 6))
+df['intrusion'].value_counts().plot(kind='bar')
+plt.title('Distribution of Normal vs. Intrusion Connections')
+plt.xlabel('Connection Type (0: Normal, 1: Intrusion)')
+plt.ylabel('Count')
+plt.show()
+
+# Correlation between numerical features
+correlation_matrix = df[['duration', 'src_bytes', 'dst_bytes', 'wrong_fragment', 'urgent', 'intrusion']].corr()
+print("\nCorrelation matrix:")
+print(correlation_matrix)
+
+# Script to explain the features
+print("\nExplanation of key features:")
+print("1. duration: The length of the connection in seconds.")
+print("2. protocol: The type of protocol used (e.g., TCP, UDP, ICMP).")
+print("3. src_bytes: The number of data bytes transferred from source to destination.")
+print("4. dst_bytes: The number of data bytes transferred from destination to source.")
+print("5. flag: Indicates the status of the connection (e.g., SF for normal connection, S0 for connection attempt rejected).")
+print("6. land: Binary feature. 1 if connection is from/to the same host/port; 0 otherwise.")
+print("7. wrong_fragment: Number of wrong fragments in the connection.")
+print("8. urgent: Number of urgent packets.")
+print("9. intrusion: Our target variable. 0 for normal connection, 1 for potential intrusion.")
