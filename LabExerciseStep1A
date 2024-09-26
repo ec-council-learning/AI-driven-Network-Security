@@ -1,0 +1,37 @@
+# Lab Exercise Step 1A: Create a test data set for exploring network traffic
+import pandas as pd
+import numpy as np
+
+# Set random seed for reproducibility
+np.random.seed(42)
+
+# Generate sample data
+n_samples = 1000
+data = {
+    'duration': np.random.randint(0, 3600, n_samples),  # Connection duration in seconds
+    'protocol': np.random.choice(['TCP', 'UDP', 'ICMP'], n_samples),
+    'src_bytes': np.random.randint(0, 1000000, n_samples),  # Bytes sent by source
+    'dst_bytes': np.random.randint(0, 1000000, n_samples),  # Bytes sent by destination
+    'flag': np.random.choice(['S0', 'S1', 'SF', 'REJ'], n_samples),  # Connection status flag
+    'land': np.random.choice([0, 1], n_samples, p=[0.99, 0.01]),  # 1 if connection is to/from the same host/port, 0 otherwise
+    'wrong_fragment': np.random.randint(0, 3, n_samples),  # Number of wrong fragments
+    'urgent': np.random.randint(0, 3, n_samples),  # Number of urgent packets
+}
+
+# Create DataFrame
+df = pd.DataFrame(data)
+
+# Add a target variable (0 for normal, 1 for intrusion)
+df['intrusion'] = np.random.choice([0, 1], n_samples, p=[0.8, 0.2])
+
+# Adjust some features to correlate with intrusions
+df.loc[df['intrusion'] == 1, 'duration'] += np.random.randint(1800, 3600, sum(df['intrusion'] == 1))
+df.loc[df['intrusion'] == 1, 'src_bytes'] += np.random.randint(500000, 1000000, sum(df['intrusion'] == 1))
+
+# Save to CSV
+df.to_csv('simplified_network_data.csv', index=False)
+
+print("Dataset created and saved as 'simplified_network_data.csv'")
+print(df.head())
+print("\nDataset shape:", df.shape)
+print("\nIntrusion distribution:\n", df['intrusion'].value_counts(normalize=True))
